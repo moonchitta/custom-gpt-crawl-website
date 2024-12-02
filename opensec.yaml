@@ -1,0 +1,106 @@
+openapi: 3.1.0
+info:
+  title: TheX Analysis API
+  description: An API to analyze a given website's technology stack.
+  version: 1.0.0
+  contact:
+    name: API Support
+    email: support@thexsol.com
+    url: https://thexsol.com/support
+servers:
+  - url: https://f789-2407-d000-1a-e3-c8e9-4336-5d2b-8bec.ngrok-free.app
+    description: Local development server
+paths:
+  /:
+    get:
+      summary: API Home
+      description: Returns an HTML page with documentation and details about the API.
+      operationId: getHomePage
+      responses:
+        '200':
+          description: A documentation HTML page.
+          content:
+            text/html:
+              schema:
+                type: string
+        '500':
+          description: Internal server error
+  /analyze:
+    post:
+      summary: Analyze website technologies
+      description: Analyzes a given website URL and returns its detected technologies.
+      operationId: analyzeWebsite
+      requestBody:
+        description: JSON object containing the website URL to analyze.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                url:
+                  type: string
+                  format: uri
+                  example: "https://example.com"
+              required:
+                - url
+      responses:
+        '200':
+          description: Successfully analyzed the website.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  url:
+                    type: string
+                    format: uri
+                    example: "https://example.com"
+                  technologies:
+                    type: object
+                    properties:
+                      CMS:
+                        type: array
+                        items:
+                          type: string
+                        example: ["WordPress"]
+                      Frontend:
+                        type: array
+                        items:
+                          type: string
+                        example: ["React"]
+                      Backend:
+                        type: array
+                        items:
+                          type: string
+                        example: ["Node.js"]
+                      Infrastructure:
+                        type: array
+                        items:
+                          type: string
+                        example: ["HTTP/3", "HSTS"]
+                      Analytics:
+                        type: array
+                        items:
+                          type: string
+                        example: ["Google Analytics"]
+        '400':
+          description: Bad request. Invalid input or URL not reachable.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Please provide a valid URL in the request body."
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "An unexpected error occurred: <details>"

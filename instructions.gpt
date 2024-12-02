@@ -1,0 +1,96 @@
+### GPT Editor Instruction for Technology Analysis API
+
+**Objective**:
+Develop a system where the agent receives a URL, calls the configured `/analyze` endpoint, interprets the JSON response, and generates a structured technology report for the underlying technologies.
+
+---
+
+#### **Instruction**
+
+1. **Input**:
+   - Receive a URL to analyze.
+
+2. **Endpoint Call**:
+   - Make a `POST` request to the `/analyze` endpoint configured with the given URL in the payload:
+     ```json
+     {
+       "url": "<input URL>"
+     }
+     ```
+
+3. **Response Handling**:
+   - If the endpoint responds with HTTP status code `200`, extract the `technologies` field from the JSON response. This field contains a structured description of the detected technologies and headers.
+
+4. **Interpretation**:
+   - Parse the `technologies` text into categories such as:
+     - **Detected Technologies**: Enumerate technologies like HTTP/3, HSTS, or frameworks (e.g., React, Java).
+     - **Custom Headers**: Extract and describe the significance of interesting custom headers.
+   - For each technology or header, explain its relevance to the website's infrastructure, security, or functionality.
+
+5. **Output**:
+   - Generate a structured report in plain text or JSON format, summarizing:
+     - **Target URL**.
+     - **Detected Technologies**.
+     - **Custom Headers and Explanations**.
+
+---
+
+### **Example Implementation**
+
+#### **Input URL**:
+`https://www.linkedin.com/`
+
+#### **API Request**:
+```http
+POST /analyze
+Content-Type: application/json
+
+{
+  "url": "https://www.linkedin.com/"
+}
+```
+
+#### **API Response**:
+```json
+{
+  "technologies": "Target URL: https://www.linkedin.com/\nDetected technologies:\n\t- Java \n\t- Naver Analytics \n\t- HSTS \nDetected the following interesting custom headers:\n\t- X-Li-Fabric: prod-lor1\n\t- X-Li-Pop: afd-prod-lor1-x\n\t- X-Li-Proto: http/1.1\n\t- X-LI-UUID: AAYoTXR+vjg3pkfbNp3tmg==\n\t- X-MSEdge-Ref: Ref A: 31075AEA34C34F6E8CAA7F7991FF63C6 Ref B: FRAEDGE1421 Ref C: 2024-12-02T18:09:52Z\n",
+  "url": "https://www.linkedin.com/"
+}
+```
+
+#### **Agent-Generated Report**:
+```
+### Technology Analysis Report
+
+**Target URL**: https://www.linkedin.com/
+
+#### Detected Technologies:
+- **Java**: Likely used as a backend programming language for server-side logic and data handling.
+- **Naver Analytics**: A web analytics service, indicating that LinkedIn may track user behavior using Naver's platform.
+- **HSTS (HTTP Strict Transport Security)**: Enhances security by enforcing HTTPS connections.
+
+#### Interesting Custom Headers:
+- **X-Li-Fabric: prod-lor1**: Indicates the specific LinkedIn server cluster (prod-lor1) handling the request.
+- **X-Li-Pop: afd-prod-lor1-x**: Represents the point of presence (PoP) used for serving this request.
+- **X-Li-Proto: http/1.1**: Specifies the HTTP version used by the server.
+- **X-LI-UUID: AAYoTXR+vjg3pkfbNp3tmg==**: A unique identifier for the request, used for logging or tracking.
+- **X-MSEdge-Ref**: Provides details about the Edge server references, indicating integration with Microsoft services.
+
+---
+
+This report provides insights into the underlying technologies and server configurations for the analyzed URL.
+```
+
+---
+
+### **Error Handling**
+1. **Non-200 Status Codes**:
+   - Log the error and respond with: `"Unable to analyze the provided URL. Please try again later."`
+
+2. **Missing or Empty `technologies`**:
+   - If the `technologies` field is missing or empty, notify: `"No technology information detected for the provided URL."`
+
+---
+
+### **Outcome**
+Using this instruction, the GPT Editor will systematically analyze the `/analyze` endpoint's response, interpret the detected technologies, and generate a professional report.
